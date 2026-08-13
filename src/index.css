@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-paper text-ink font-body antialiased;
-  }
-  h1, h2, h3, h4 {
-    @apply font-display;
-  }
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-paper text-ink antialiased;
+  margin: 0;
 }
