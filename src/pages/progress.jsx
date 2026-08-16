@@ -1,20 +1,19 @@
 import {
   TrendingUp,
-  Target,
   Flame,
   CheckCircle2,
   CalendarDays,
-  ArrowUpRight,
+  Target,
 } from "lucide-react";
 
 const weeklyData = [
-  { day: "Mon", value: 62 },
-  { day: "Tue", value: 74 },
-  { day: "Wed", value: 48 },
-  { day: "Thu", value: 82 },
-  { day: "Fri", value: 68 },
-  { day: "Sat", value: 91 },
-  { day: "Sun", value: 76 },
+  { day: "MON", value: 62 },
+  { day: "TUE", value: 74 },
+  { day: "WED", value: 48 },
+  { day: "THU", value: 82 },
+  { day: "FRI", value: 68 },
+  { day: "SAT", value: 91 },
+  { day: "SUN", value: 76 },
 ];
 
 const activities = [
@@ -22,227 +21,285 @@ const activities = [
     title: "Morning Meditation",
     detail: "Completed today's session",
     time: "Today",
-    icon: CheckCircle2,
   },
   {
     title: "Read 24 Books",
     detail: "Read for 35 minutes",
     time: "Yesterday",
-    icon: Target,
   },
   {
     title: "Learn Web Design",
     detail: "Completed a learning session",
     time: "2 days ago",
-    icon: TrendingUp,
   },
 ];
 
 export default function Progress() {
-  const average =
-    Math.round(
-      weeklyData.reduce((sum, item) => sum + item.value, 0) /
-        weeklyData.length
-    );
+  const average = Math.round(
+    weeklyData.reduce(
+      (sum, item) =>
+        sum + item.value,
+      0
+    ) / weeklyData.length
+  );
 
   return (
-    <div className="w-full bg-[#F7F5F1] text-[#252938]">
-      <header className="border-b border-[#E7E3DC] bg-[#F7F5F1]/95 px-6 py-5 backdrop-blur md:px-10">
-        <div className="mx-auto max-w-[1450px]">
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#96939A]">
-            Your journey
+    <div className="app-page">
+
+      <header className="border-b border-border bg-surface px-5 py-7 md:px-8 lg:px-10">
+
+        <div className="mx-auto max-w-[1250px]">
+
+          <p className="section-label">
+            PERFORMANCE
           </p>
 
-          <h1 className="text-[27px] font-semibold tracking-[-0.035em] md:text-[31px]">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cream">
             Progress
           </h1>
 
-          <p className="mt-1 text-sm text-[#85828A]">
-            See how consistently you are moving toward your goals.
+          <p className="mt-2 text-sm text-beige/60">
+            Understand your consistency and
+            movement toward your goals.
           </p>
+
         </div>
+
       </header>
 
-      <main className="mx-auto max-w-[1450px] px-6 py-7 md:px-10 md:py-9">
-        <section className="grid gap-4 md:grid-cols-3">
+      <main className="mx-auto max-w-[1250px] px-5 py-7 md:px-8 lg:px-10">
+
+        {/* METRICS */}
+
+        <div className="grid gap-4 md:grid-cols-3">
+
           <StatCard
             icon={<TrendingUp size={18} />}
             label="WEEKLY PROGRESS"
             value={`${average}%`}
-            description="average this week"
+            detail="average this week"
           />
 
           <StatCard
             icon={<Flame size={18} />}
             label="CURRENT STREAK"
             value="7"
-            description="days in a row"
+            detail="days in a row"
           />
 
           <StatCard
             icon={<CheckCircle2 size={18} />}
             label="COMPLETED"
             value="18"
-            description="activities completed"
+            detail="activities"
           />
-        </section>
 
-        <section className="mt-5 grid gap-5 lg:grid-cols-[1.6fr_1fr]">
-          <div className="rounded-[26px] border border-[#E4E0D9] bg-white p-6 shadow-[0_4px_20px_rgba(39,43,58,0.035)] md:p-7">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#9A969D]">
-                  Activity overview
-                </p>
+        </div>
 
-                <h2 className="mt-1 text-[20px] font-semibold">
-                  Weekly consistency
-                </h2>
-              </div>
+        {/* CHART + OVERALL */}
 
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F0EDF9] text-[#7567C8]">
-                <TrendingUp size={17} />
-              </div>
-            </div>
+        <div className="mt-5 grid gap-5 lg:grid-cols-[1.5fr_0.8fr]">
 
-            <div className="mt-8 flex h-[220px] items-end justify-between gap-3">
-              {weeklyData.map((item) => (
-                <div
-                  key={item.day}
-                  className="flex h-full flex-1 flex-col items-center justify-end"
-                >
-                  <div className="flex w-full flex-1 items-end justify-center">
-                    <div
-                      className="w-full max-w-[38px] rounded-t-xl bg-[#7567C8] transition-all hover:bg-[#6658B7]"
-                      style={{
-                        height: `${item.value}%`,
-                      }}
-                    />
-                  </div>
+          <div className="panel p-6 shadow-card md:p-7">
 
-                  <span className="mt-3 text-[10px] font-medium text-[#9A969D]">
-                    {item.day}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[26px] border border-[#E4E0D9] bg-white p-6 shadow-[0_4px_20px_rgba(39,43,58,0.035)] md:p-7">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#9A969D]">
-              Goal completion
+            <p className="section-label">
+              ACTIVITY OVERVIEW
             </p>
 
-            <h2 className="mt-1 text-[20px] font-semibold">
+            <h2 className="mt-2 text-xl font-semibold text-cream">
+              Weekly consistency
+            </h2>
+
+            <div className="mt-8 flex h-56 items-end gap-3">
+
+              {weeklyData.map(
+                (item) => (
+                  <div
+                    key={item.day}
+                    className="flex h-full flex-1 flex-col justify-end"
+                  >
+
+                    <div className="flex h-full items-end">
+
+                      <div
+                        className="mx-auto w-full max-w-[42px] rounded-t-lg bg-burgundy transition hover:bg-wine"
+                        style={{
+                          height: `${item.value}%`,
+                        }}
+                      />
+
+                    </div>
+
+                    <span className="mt-3 text-center text-[9px] font-semibold tracking-wider text-beige/40">
+                      {item.day}
+                    </span>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+          <div className="panel p-6 shadow-card md:p-7">
+
+            <p className="section-label">
+              GOAL COMPLETION
+            </p>
+
+            <h2 className="mt-2 text-xl font-semibold text-cream">
               Overall progress
             </h2>
 
-            <div className="mt-8 flex items-center justify-center">
-              <div className="relative flex h-40 w-40 items-center justify-center rounded-full border-[14px] border-[#EAE7E1]">
-                <div className="absolute inset-[-14px] rounded-full border-[14px] border-transparent border-l-[#7567C8] border-t-[#7567C8] border-r-[#7567C8] rotate-[-35deg]" />
+            <div className="mt-8 flex justify-center">
+
+              <div className="relative flex h-40 w-40 items-center justify-center rounded-full border-[12px] border-[#32191D]">
+
+                <div className="absolute inset-[-12px] rounded-full border-[12px] border-transparent border-l-burgundy border-t-burgundy border-r-burgundy rotate-[-35deg]" />
 
                 <div className="text-center">
-                  <p className="text-3xl font-semibold">68%</p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[#9A969D]">
+
+                  <p className="text-3xl font-semibold text-cream">
+                    68%
+                  </p>
+
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-beige/45">
                     complete
                   </p>
+
                 </div>
+
               </div>
+
             </div>
 
-            <div className="mt-7 flex items-center justify-between border-t border-[#EEEAE4] pt-5">
-              <div>
-                <p className="text-xs text-[#9A969D]">
-                  Goals on track
-                </p>
+            <div className="mt-7 border-t border-border pt-5">
 
-                <p className="mt-1 text-lg font-semibold">
-                  3 / 4
-                </p>
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <p className="text-[10px] text-beige/45">
+                    Goals on track
+                  </p>
+
+                  <p className="mt-1 text-lg font-semibold text-cream">
+                    3 / 4
+                  </p>
+
+                </div>
+
+                <Target
+                  size={18}
+                  className="text-beige/50"
+                />
+
               </div>
 
-              <div className="flex items-center gap-1 text-xs font-semibold text-[#7567C8]">
-                <ArrowUpRight size={14} />
-                12% this month
-              </div>
             </div>
+
           </div>
-        </section>
 
-        <section className="mt-5 rounded-[26px] border border-[#E4E0D9] bg-white p-6 shadow-[0_4px_20px_rgba(39,43,58,0.035)] md:p-7">
+        </div>
+
+        {/* ACTIVITY */}
+
+        <section className="panel mt-5 p-6 shadow-card md:p-7">
+
           <div className="flex items-center justify-between">
+
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#9A969D]">
-                Recent activity
+
+              <p className="section-label">
+                ACTIVITY LOG
               </p>
 
-              <h2 className="mt-1 text-[20px] font-semibold">
-                Your latest progress
+              <h2 className="mt-2 text-xl font-semibold text-cream">
+                Recent progress
               </h2>
+
             </div>
 
             <CalendarDays
               size={18}
-              className="text-[#9A969D]"
+              className="text-beige/50"
             />
+
           </div>
 
-          <div className="mt-6 divide-y divide-[#EEEAE4]">
-            {activities.map((activity) => {
-              const Icon = activity.icon;
+          <div className="mt-5 divide-y divide-border">
 
-              return (
+            {activities.map(
+              (activity) => (
                 <div
                   key={activity.title}
                   className="flex items-center gap-4 py-4"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F0EDF9] text-[#7567C8]">
-                    <Icon size={17} />
+
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-wine/25 text-cream">
+                    <CheckCircle2 size={16} />
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-[#363844]">
+                  <div className="flex-1">
+
+                    <p className="text-sm font-semibold text-cream">
                       {activity.title}
                     </p>
 
-                    <p className="mt-1 text-xs text-[#9A969D]">
+                    <p className="mt-1 text-xs text-beige/50">
                       {activity.detail}
                     </p>
+
                   </div>
 
-                  <span className="text-[11px] text-[#AAA6AD]">
+                  <span className="text-[10px] text-beige/35">
                     {activity.time}
                   </span>
+
                 </div>
-              );
-            })}
+              )
+            )}
+
           </div>
+
         </section>
+
       </main>
+
     </div>
   );
 }
 
-function StatCard({ icon, label, value, description }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  detail,
+}) {
   return (
-    <section className="rounded-[22px] border border-[#E4E0D9] bg-white p-5 shadow-[0_4px_20px_rgba(39,43,58,0.035)]">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F0EDF9] text-[#7567C8]">
+    <div className="panel p-5 shadow-card">
+
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-wine/25 text-cream">
         {icon}
       </div>
 
-      <p className="mt-5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#9A969D]">
+      <p className="mt-5 section-label">
         {label}
       </p>
 
       <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-[26px] font-semibold tracking-tight">
+
+        <span className="text-2xl font-semibold text-cream">
           {value}
         </span>
 
-        <span className="text-xs text-[#9A969D]">
-          {description}
+        <span className="text-[11px] text-beige/45">
+          {detail}
         </span>
+
       </div>
-    </section>
+
+    </div>
   );
 }

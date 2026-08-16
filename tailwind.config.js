@@ -4,23 +4,36 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+
   theme: {
     extend: {
       colors: {
-        paper: "#F7F5F1",
-        ink: "#252938",
-        primary: "#7567C8",
-        navy: "#293148",
-        line: "#E4E0D9",
-        muted: "#85828A",
-        soft: "#FAF9F7",
-        lavender: "#F0EDF9",
-        lavenderLight: "#F7F4FF",
+        background: "#12090B",
+        surface: "#190D0F",
+        surface2: "#211114",
+
+        burgundy: "#561C24",
+        wine: "#6D2932",
+
+        beige: "#C7B7A3",
+        cream: "#E8D8C4",
+
+        border: "#352024",
+        muted: "#9F8F82",
+        text: "#E8D8C4",
       },
+
       borderRadius: {
-        card: "26px",
+        panel: "18px",
+        card: "14px",
+      },
+
+      boxShadow: {
+        card: "0 10px 35px rgba(0, 0, 0, 0.22)",
+        glow: "0 12px 40px rgba(86, 28, 36, 0.16)",
       },
     },
   },
+
   plugins: [],
 };

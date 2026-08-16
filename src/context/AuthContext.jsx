@@ -1,60 +1,72 @@
-```jsx
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('goal-journal-user');
+    try {
+      const savedUser = localStorage.getItem("goal-journal-user");
 
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    } catch (error) {
+      console.error("Failed to load saved user:", error);
+      localStorage.removeItem("goal-journal-user");
+    } finally {
+      setCheckingAuth(false);
     }
-
-    setCheckingAuth(false);
   }, []);
 
   async function login(email, password) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     if (!email || !password) {
-      throw new Error('Email and password are required.');
+      throw new Error("Email and password are required.");
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const mockUser = {
-      uid: 'demo-user',
-      email,
+      uid: "demo-user",
+      email: email.trim(),
     };
 
-    localStorage.setItem('goal-journal-user', JSON.stringify(mockUser));
+    localStorage.setItem(
+      "goal-journal-user",
+      JSON.stringify(mockUser)
+    );
+
     setUser(mockUser);
 
     return mockUser;
   }
 
   async function register(email, password) {
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
     if (!email || !password) {
-      throw new Error('Email and password are required.');
+      throw new Error("Email and password are required.");
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const mockUser = {
-      uid: 'demo-user',
-      email,
+      uid: "demo-user",
+      email: email.trim(),
     };
 
-    localStorage.setItem('goal-journal-user', JSON.stringify(mockUser));
+    localStorage.setItem(
+      "goal-journal-user",
+      JSON.stringify(mockUser)
+    );
+
     setUser(mockUser);
 
     return mockUser;
   }
 
   async function logout() {
-    localStorage.removeItem('goal-journal-user');
+    localStorage.removeItem("goal-journal-user");
     setUser(null);
   }
 
@@ -74,12 +86,13 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-  if (!ctx) {
-    throw new Error('useAuth must be used inside AuthProvider');
+  if (context === null) {
+    throw new Error(
+      "useAuth must be used inside an AuthProvider"
+    );
   }
 
-  return ctx;
+  return context;
 }
-```

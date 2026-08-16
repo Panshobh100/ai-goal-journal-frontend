@@ -1,15 +1,25 @@
-import Sidebar from './Sidebar';
+import { Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 
-export default function AppShell({ children }) {
+export default function AppShell() {
   return (
-    <div className="min-h-screen bg-paper">
-      <Sidebar />
+    <div className="min-h-screen bg-background text-text">
+      <div className="flex min-h-screen">
 
-      <main className="ml-[250px] min-h-screen">
-        <div className="mx-auto w-full max-w-[1440px] px-8 py-8 lg:px-10">
-          {children}
+        <Sidebar />
+
+        <div className="flex min-w-0 flex-1 flex-col">
+
+          <Navbar />
+
+          <main className="min-w-0 flex-1 bg-background">
+            <Outlet />
+          </main>
+
         </div>
-      </main>
+
+      </div>
     </div>
   );
 }

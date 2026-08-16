@@ -1,169 +1,293 @@
-import { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, ArrowUpRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Target,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  function handleRegister(e) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [accepted, setAccepted] = useState(false);
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    navigate('/login');
+    setError("");
+
+    if (!accepted) {
+      setError("Please accept the terms before continuing.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await register(email, password);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message || "Unable to create account.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-12">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-background text-cream">
 
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-white shadow-sm">
-            <span className="text-xl font-semibold">GJ</span>
+      <div className="grid min-h-screen lg:grid-cols-[1.05fr_0.95fr]">
+
+        <div className="relative hidden overflow-hidden border-r border-border lg:flex">
+
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(109,41,50,0.35),transparent_45%)]" />
+
+          <div className="relative flex w-full flex-col justify-between p-12 xl:p-16">
+
+            <div className="flex items-center gap-3">
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-burgundy">
+                <Target size={21} />
+              </div>
+
+              <div>
+                <p className="text-sm font-bold text-cream">
+                  GOAL JOURNAL
+                </p>
+
+                <p className="text-[10px] uppercase tracking-[0.18em] text-beige">
+                  Personal growth system
+                </p>
+              </div>
+
+            </div>
+
+            <div>
+
+              <p className="section-label">
+                BUILD. REFLECT. IMPROVE.
+              </p>
+
+              <h1 className="mt-5 text-5xl font-semibold leading-[1.05] tracking-[-0.05em] text-cream xl:text-6xl">
+                Your goals deserve
+                <br />
+                a system.
+              </h1>
+
+              <p className="mt-6 max-w-lg text-base leading-7 text-beige">
+                Keep your goals, journal entries, progress and insights
+                together instead of scattered across different apps.
+              </p>
+
+            </div>
+
+            <p className="text-xs text-beige/70">
+              Goal Journal • Personal Productivity Platform
+            </p>
+
           </div>
 
-          <h1 className="text-3xl font-semibold tracking-tight text-ink">
-            Create your account
-          </h1>
-
-          <p className="mt-2 text-sm text-muted">
-            Start building better habits and reaching your goals.
-          </p>
         </div>
 
-        <div className="rounded-[26px] border border-line bg-white p-7 shadow-[0_4px_20px_rgba(39,43,58,0.035)]">
+        <div className="flex items-center justify-center px-6 py-12">
 
-          <div className="mb-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
-              Goal Journal
-            </p>
+          <div className="w-full max-w-md">
 
-            <h2 className="mt-1.5 text-[21px] font-semibold tracking-tight text-ink">
-              Get started
-            </h2>
+            <div className="mb-8 lg:hidden">
 
-            <p className="mt-1 text-sm text-muted">
-              Create your personal Goal Journal account.
-            </p>
-          </div>
+              <div className="flex items-center gap-3">
 
-          <form onSubmit={handleRegister} className="space-y-5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-burgundy">
+                  <Target size={21} />
+                </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-ink">
-                Full name
-              </label>
+                <p className="text-sm font-bold text-cream">
+                  GOAL JOURNAL
+                </p>
 
-              <div className="relative">
-                <User
-                  size={17}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  required
-                  className="w-full rounded-xl border border-line bg-soft py-3 pl-10 pr-4 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
               </div>
+
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-ink">
-                Email address
-              </label>
+            <div className="panel p-7 shadow-card md:p-9">
 
-              <div className="relative">
-                <Mail
-                  size={17}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary"
-                />
+              <div className="mb-7">
 
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  required
-                  className="w-full rounded-xl border border-line bg-soft py-3 pl-10 pr-4 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
+                <p className="section-label">
+                  GET STARTED
+                </p>
+
+                <h2 className="mt-2 text-3xl font-semibold text-cream">
+                  Create account
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-beige">
+                  Create your personal workspace and start tracking your
+                  growth.
+                </p>
+
               </div>
-            </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-ink">
-                Password
-              </label>
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-5"
+              >
 
-              <div className="relative">
-                <Lock
-                  size={17}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary"
-                />
+                <div>
 
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Create a password"
-                  required
-                  className="w-full rounded-xl border border-line bg-soft py-3 pl-10 pr-11 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
+                  <label className="mb-2 block text-xs font-semibold text-cream">
+                    Full name
+                  </label>
+
+                  <div className="relative">
+
+                    <User
+                      size={17}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-beige"
+                    />
+
+                    <input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      className="dark-input pl-11"
+                      required
+                    />
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <label className="mb-2 block text-xs font-semibold text-cream">
+                    Email address
+                  </label>
+
+                  <div className="relative">
+
+                    <Mail
+                      size={17}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-beige"
+                    />
+
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="dark-input pl-11"
+                      required
+                    />
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <label className="mb-2 block text-xs font-semibold text-cream">
+                    Password
+                  </label>
+
+                  <div className="relative">
+
+                    <Lock
+                      size={17}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-beige"
+                    />
+
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Create a password"
+                      className="dark-input pl-11 pr-12"
+                      required
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword((value) => !value)
+                      }
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-beige hover:text-cream"
+                    >
+                      {showPassword ? (
+                        <EyeOff size={17} />
+                      ) : (
+                        <Eye size={17} />
+                      )}
+                    </button>
+
+                  </div>
+
+                </div>
+
+                <label className="flex items-start gap-3 text-xs leading-5 text-beige">
+
+                  <input
+                    type="checkbox"
+                    checked={accepted}
+                    onChange={(e) => setAccepted(e.target.checked)}
+                    className="mt-1 accent-[#6D2932]"
+                  />
+
+                  <span>
+                    I agree to the terms and understand that my journal
+                    activity may be used to generate personalized insights.
+                  </span>
+
+                </label>
+
+                {error && (
+                  <div className="rounded-xl border border-burgundy bg-wine/40 px-4 py-3 text-sm text-cream">
+                    {error}
+                  </div>
+                )}
 
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted transition hover:text-primary"
+                  type="submit"
+                  disabled={loading}
+                  className="primary-button w-full"
                 >
-                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  {loading ? "Creating account..." : "Create account"}
+                  {!loading && <ArrowRight size={16} />}
                 </button>
+
+              </form>
+
+              <div className="mt-7 border-t border-border pt-6">
+
+                <p className="text-center text-sm text-beige">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="font-semibold text-cream hover:text-beige"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+
               </div>
+
             </div>
 
-            <label className="flex items-start gap-2 text-xs leading-5 text-muted">
-              <input
-                type="checkbox"
-                required
-                className="mt-1 rounded border-line accent-[#7567C8]"
-              />
-
-              <span>
-                I agree to the terms and conditions and understand that my
-                journal data will be used to provide personalized insights.
-              </span>
-            </label>
-
-            <button
-              type="submit"
-              className="group flex w-full items-center justify-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#20263A]"
-            >
-              Create account
-              <ArrowUpRight
-                size={15}
-                className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </button>
-
-          </form>
-
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-line" />
-            <span className="text-[10px] font-semibold text-muted">
-              OR
-            </span>
-            <div className="h-px flex-1 bg-line" />
           </div>
-
-          <p className="text-center text-sm text-muted">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-semibold text-primary hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
-
         </div>
-
-        <p className="mt-6 text-center text-[11px] text-[#AAA6AD]">
-          Your goals. Your progress. Your journey.
-        </p>
 
       </div>
     </div>
