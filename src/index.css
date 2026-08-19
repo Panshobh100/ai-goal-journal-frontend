@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #e8d8c4;
+  background: #12090b;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  min-height: 100%;
+  background: #12090b;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #12090b;
+  color: #e8d8c4;
+}
+
+#root {
+  min-height: 100vh;
+  background: #12090b;
+}
+
+/* ----------------------------- */
+/* GLOBAL SCROLLBAR */
+/* ----------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #190d0f;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #561c24;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #6d2932;
+}
+
+/* ----------------------------- */
+/* TEXT SELECTION */
+/* ----------------------------- */
+
+::selection {
+  background: #6d2932;
+  color: #e8d8c4;
+}
+
+/* ----------------------------- */
+/* COMMON APP CLASSES */
+/* ----------------------------- */
+
+@layer components {
+  .app-page {
+    min-height: calc(100vh - 76px);
+    background: #12090b;
+    color: #e8d8c4;
+  }
+
+  .panel {
+    border: 1px solid #352024;
+    border-radius: 18px;
+    background: #190d0f;
+  }
+
+  .section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(199, 183, 163, 0.55);
+  }
+
+  .primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border-radius: 999px;
+    background: #561c24;
+
+    padding: 11px 18px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #e8d8c4;
+
+    transition:
+      background 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .primary-button:hover {
+    background: #6d2932;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(86, 28, 36, 0.25);
+  }
+
+  .primary-button:active {
+    transform: translateY(0);
+  }
+
+  .input-dark {
+    width: 100%;
+    border: 1px solid #352024;
+    border-radius: 12px;
+    background: #211114;
+    color: #e8d8c4;
+    outline: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .input-dark::placeholder {
+    color: rgba(199, 183, 163, 0.4);
+  }
+
+  .input-dark:focus {
+    border-color: #6d2932;
+    box-shadow: 0 0 0 3px rgba(109, 41, 50, 0.14);
+  }
+}
+
+/* ----------------------------- */
+/* REMOVE WHITE FORM CONTROLS */
+/* ----------------------------- */
+
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(80%);
+  opacity: 0.65;
+}

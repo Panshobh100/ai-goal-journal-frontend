@@ -1,0 +1,228 @@
+import {
+  LayoutDashboard,
+  Target,
+  BookOpen,
+  Sparkles,
+  TrendingUp,
+  User,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
+
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+
+const navigation = [
+  {
+    label: "Overview",
+    items: [
+      {
+        name: "Dashboard",
+        path: "/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        name: "Progress",
+        path: "/progress",
+        icon: TrendingUp,
+      },
+    ],
+  },
+
+  {
+    label: "Growth",
+    items: [
+      {
+        name: "Goals",
+        path: "/goals",
+        icon: Target,
+      },
+      {
+        name: "Journal",
+        path: "/journal",
+        icon: BookOpen,
+      },
+      {
+        name: "AI Insights",
+        path: "/insights",
+        icon: Sparkles,
+      },
+    ],
+  },
+
+  {
+    label: "Account",
+    items: [
+      {
+        name: "Profile",
+        path: "/profile",
+        icon: User,
+      },
+      {
+        name: "Settings",
+        path: "/settings",
+        icon: Settings,
+      },
+    ],
+  },
+];
+
+export default function Sidebar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  async function handleLogout() {
+    await logout();
+    navigate("/login");
+  }
+
+  return (
+    <>
+      {/* MOBILE BUTTON */}
+
+      <button
+        type="button"
+        onClick={() => setMobileOpen(true)}
+        className="fixed left-4 top-4 z-40 flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-cream shadow-card lg:hidden"
+      >
+        <Menu size={19} />
+      </button>
+
+      {/* MOBILE OVERLAY */}
+
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* SIDEBAR */}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-[255px] flex-col border-r border-border bg-[#190D0F] transition-transform duration-200 lg:static lg:translate-x-0 ${
+          mobileOpen
+            ? "translate-x-0"
+            : "-translate-x-full"
+        }`}
+      >
+
+        {/* BRAND */}
+
+        <div className="flex h-[76px] items-center justify-between border-b border-border px-5">
+
+          <div className="flex items-center gap-3">
+
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-burgundy shadow-[0_8px_20px_rgba(109,41,50,0.3)]">
+              <Target size={19} className="text-cream" />
+            </div>
+
+            <div>
+              <p className="text-sm font-bold tracking-wide text-cream">
+                GOAL JOURNAL
+              </p>
+
+              <p className="text-[9px] uppercase tracking-[0.18em] text-beige/70">
+                Growth workspace
+              </p>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            className="text-beige lg:hidden"
+          >
+            <X size={18} />
+          </button>
+
+        </div>
+
+        {/* NAVIGATION */}
+
+        <div className="flex-1 overflow-y-auto px-3 py-5">
+
+          {navigation.map((section) => (
+            <div
+              key={section.label}
+              className="mb-6"
+            >
+
+              <p className="mb-2 px-3 text-[9px] font-bold uppercase tracking-[0.2em] text-beige/50">
+                {section.label}
+              </p>
+
+              <div className="space-y-1">
+
+                {section.items.map((item) => {
+
+                  const Icon = item.icon;
+
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setMobileOpen(false)}
+                      className={({ isActive }) =>
+                        `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
+                          isActive
+                            ? "bg-burgundy text-cream shadow-[0_6px_18px_rgba(109,41,50,0.22)]"
+                            : "text-beige/75 hover:bg-surface2 hover:text-cream"
+                        }`
+                      }
+                    >
+
+                      <Icon
+                        size={17}
+                        strokeWidth={1.8}
+                      />
+
+                      <span>{item.name}</span>
+
+                    </NavLink>
+                  );
+                })}
+
+              </div>
+
+            </div>
+          ))}
+
+        </div>
+
+        {/* USER / LOGOUT */}
+
+        <div className="border-t border-border p-4">
+
+          <div className="mb-3 rounded-xl border border-border bg-surface px-3 py-3">
+
+            <p className="text-[9px] uppercase tracking-[0.15em] text-beige/50">
+              Workspace
+            </p>
+
+            <p className="mt-1 text-xs font-medium text-cream">
+              Personal Growth
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-beige/70 transition hover:bg-wine/40 hover:text-cream"
+          >
+            <LogOut size={17} />
+            Sign out
+          </button>
+
+        </div>
+
+      </aside>
+    </>
+  );
+}
