@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Goals from "./pages/Goals";
 import Journal from "./pages/Journal";
 import Insights from "./pages/Insights";
-import Progress from "./pages/Progress";
+import Progress from "./pages/progress";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
