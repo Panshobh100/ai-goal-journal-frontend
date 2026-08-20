@@ -6,8 +6,9 @@ import {
   X,
   CalendarDays,
   Pencil,
+  Mic,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const JOURNAL_KEY = "goal-journal-entries";
 
@@ -35,6 +36,31 @@ export default function Journal() {
 
   const [error, setError] = useState("");
   const [deleteId, setDeleteId] = useState(null);
+
+  // Voice-to-text state
+  const [isListening, setIsListening] = useState(false);
+  const [isRecordingReady, setIsRecordingReady] = useState(false);
+  const [voiceError, setVoiceError] = useState("");
+  const [liveTranscript, setLiveTranscript] = useState("");
+
+  const recognitionRef = useRef(null);
+  const transcriptRef = useRef("");
+  const errorOccurredRef = useRef(false);
+
+  // Stop any active SpeechRecognition when the component unmounts.
+  useEffect(() => {
+    return () => {
+      const recognition = recognitionRef.current;
+      if (recognition) {
+        try {
+          recognition.abort();
+        } catch {
+          // ignore errors while tearing down
+        }
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
 
   function save(updated) {
     setEntries(updated);
@@ -71,6 +97,22 @@ export default function Journal() {
     setTitle("");
     setContent("");
     setError("");
+
+    // If a voice session is in flight, tear it down cleanly.
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch {
+        // ignore errors while stopping
+      }
+    }
+    setIsListening(false);
+    setIsRecordingReady(false);
+    setVoiceError("");
+    setLiveTranscript("");
+    transcriptRef.current = "";
+    errorOccurredRef.current = false;
   }
 
   function submitEntry(e) {
@@ -145,6 +187,111 @@ export default function Journal() {
 
     if (viewEntry?.id === deleteId) {
       setViewEntry(null);
+    }
+  }
+
+  function startVoice() {
+    const SpeechRecognition =
+      typeof window !== "undefined"
+        ? window.SpeechRecognition || window.webkitSpeechRecognition
+        : undefined;
+
+    if (!SpeechRecognition) {
+      setVoiceError(
+        "Speech Recognition is not supported in this browser. Try Chrome, Edge, or another supported browser."
+      );
+      return;
+    }
+
+    setVoiceError("");
+    errorOccurredRef.current = false;
+    setLiveTranscript("");
+    transcriptRef.current = "";
+    setIsRecordingReady(true);
+    setIsListening(false);
+
+    let recognition;
+    try {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+    } catch {
+      setVoiceError("Could not initialize speech recognition.");
+      setIsRecordingReady(false);
+      return;
+    }
+
+    recognition.onresult = (event) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const res = event.results[i];
+        if (res.isFinal) {
+          transcriptRef.current += res[0].transcript;
+        } else {
+          interim += res[0].transcript;
+        }
+      }
+      setIsListening(true);
+      setLiveTranscript(interim);
+    };
+
+    recognition.onerror = (event) => {
+      errorOccurredRef.current = true;
+      if (event.error === "not-allowed") {
+        setVoiceError(
+          "Microphone access was denied. Please allow microphone access and try again."
+        );
+      } else if (event.error === "no-speech") {
+        // No audio detected - not a hard failure.
+      } else {
+        setVoiceError(`Speech recognition error: ${event.error}`);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsRecordingReady(false);
+      setIsListening(false);
+
+      if (!errorOccurredRef.current) {
+        const accumulated = transcriptRef.current.trim();
+
+        if (accumulated) {
+          // Append the transcript to whatever is already in the field.
+          setContent((prev) =>
+            prev ? prev + "\n\n" + accumulated : accumulated
+          );
+        } else {
+          setVoiceError(
+            "No speech was detected. Please try speaking clearly."
+          );
+        }
+      }
+
+      errorOccurredRef.current = false;
+      transcriptRef.current = "";
+      setLiveTranscript("");
+    };
+
+    recognitionRef.current = recognition;
+
+    try {
+      recognition.start();
+    } catch {
+      setVoiceError("Could not start speech recognition. Please try again.");
+      setIsRecordingReady(false);
+      setIsListening(false);
+    }
+  }
+
+  function stopVoice() {
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch {
+        // ignore errors when stopping
+      }
     }
   }
 
@@ -414,6 +561,66 @@ export default function Journal() {
                   placeholder="Write your thoughts..."
                   className="mt-2 w-full resize-none rounded-xl border border-[#6D2932]/40 bg-[#120B0C] px-4 py-3 text-sm leading-6 text-[#E8D8C4] outline-none placeholder:text-[#75625D] focus:border-[#6D2932]"
                 />
+
+              </div>
+
+              {/* Voice-to-text */}
+
+              <div className="mt-1 flex flex-col gap-2.5">
+
+                <div className="flex items-center justify-between">
+
+                  <div className="flex items-center gap-2">
+
+                    <button
+                      type="button"
+                      onClick={startVoice}
+                      disabled={isListening || isRecordingReady}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#6D2932]/40 bg-[#120B0C] px-3.5 py-2 text-xs font-semibold text-[#C7B7A3] transition hover:bg-[#561C24] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Mic size={14} />
+                      {isListening
+                        ? "Listening..."
+                        : isRecordingReady
+                        ? "Starting..."
+                        : "Voice journal"}
+                    </button>
+
+                    {isListening && (
+                      <button
+                        type="button"
+                        onClick={stopVoice}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#6D2932]/40 bg-[#561C24]/50 px-3.5 py-2 text-xs font-semibold text-[#E8D8C4] transition hover:bg-[#6D2932]"
+                      >
+                        Stop
+                      </button>
+                    )}
+
+                  </div>
+
+                  {isListening && (
+                    <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#E8D8C4]">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8D8C4] opacity-75"></span>
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E8D8C4]"></span>
+                      </span>
+                      Recording
+                    </span>
+                  )}
+
+                </div>
+
+                {liveTranscript && (
+                  <div className="rounded-xl border border-[#6D2932]/30 bg-[#120B0C] px-3.5 py-2.5 text-xs italic text-[#C7B7A3]">
+                    {liveTranscript}
+                  </div>
+                )}
+
+                {voiceError && (
+                  <div className="rounded-xl border border-[#6D2932] bg-[#561C24]/30 px-4 py-3 text-sm text-[#E8D8C4]">
+                    {voiceError}
+                  </div>
+                )}
 
               </div>
 
